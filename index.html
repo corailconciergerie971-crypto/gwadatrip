@@ -1,0 +1,1233 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>GwadaTrip – Excursions Guadeloupe</title>
+<link rel="manifest" href="manifest.json"/>
+<meta name="theme-color" content="#0df2df"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="default"/>
+<meta name="apple-mobile-web-app-title" content="GwadaTrip"/>
+<meta name="description" content="Réservez vos excursions en Guadeloupe."/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        colors: {
+          "primary": "#0df2df",
+          "primary-dark": "#0abfb0",
+          "accent": "#ff7f50",
+          "background-light": "#f8fcfb",
+          "background-dark": "#102221",
+          "surface-dark": "#162e2c",
+          "text-main": "#0d1c1b",
+          "text-secondary": "#4a6360",
+          "coral": "#FF6F61",
+          "coral-dark": "#E65A4C",
+        },
+        fontFamily: { "display": ["Plus Jakarta Sans", "sans-serif"] },
+        borderRadius: { "DEFAULT":"0.5rem","lg":"1rem","xl":"1.5rem","2xl":"2rem","full":"9999px" },
+        boxShadow: { 'soft': '0 4px 20px -2px rgba(13,242,223,0.1)', 'card': '0 2px 8px rgba(0,0,0,0.04)' }
+      }
+    }
+  }
+</script>
+<style>
+  .no-scrollbar::-webkit-scrollbar { display:none; }
+  .no-scrollbar { -ms-overflow-style:none; scrollbar-width:none; }
+  .screen { display:none; }
+  .screen.active { display:flex; flex-direction:column; min-height:100dvh; }
+  @keyframes fadeUp { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:translateY(0); } }
+  @keyframes scaleIn { from { opacity:0; transform:scale(0.85); } to { opacity:1; transform:scale(1); } }
+  .fade-up { animation: fadeUp 0.35s ease both; }
+  .scale-in { animation: scaleIn 0.4s cubic-bezier(.34,1.56,.64,1) both; }
+  .anim-delay-1 { animation-delay: 0.06s; }
+  .anim-delay-2 { animation-delay: 0.12s; }
+  .anim-delay-3 { animation-delay: 0.18s; }
+  .anim-delay-4 { animation-delay: 0.24s; }
+  .pb-safe { padding-bottom: env(safe-area-inset-bottom, 16px); }
+  input[type=date] { color-scheme: light; }
+  .dark input[type=date] { color-scheme: dark; }
+  .badge-pending  { background:#ff7f5020; color:#ff7f50; }
+  .badge-approved { background:#0df2df20; color:#0abfb0; }
+  .badge-refused  { background:#ef444420; color:#ef4444; }
+</style>
+</head>
+<body class="bg-background-light font-display antialiased">
+
+<!-- ═══════════════════════════════════════════════════════
+     ÉCRAN 1 — ACCUEIL
+═══════════════════════════════════════════════════════ -->
+<div id="screen-home" class="screen active max-w-md mx-auto bg-white shadow-xl relative">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-50 bg-background-light/80 backdrop-blur-md border-b border-primary/10 px-5 py-3 flex items-center justify-between">
+    <div class="flex items-center gap-2 text-primary-dark">
+      <span class="material-symbols-outlined text-3xl">sailing</span>
+      <h1 class="text-xl font-extrabold tracking-tight text-text-main">Gwada<span class="text-primary">Trip</span></h1>
+    </div>
+    <button onclick="openQR()" class="p-2 rounded-full hover:bg-primary/10 transition-colors" title="QR Code">
+        <span class="material-symbols-outlined text-text-main">qr_code_2</span>
+      </button>
+      <button onclick="goTo('screen-admin')" class="relative p-2 rounded-full hover:bg-primary/10 transition-colors group" title="Admin">
+      <span class="absolute top-2 right-2 h-2 w-2 rounded-full bg-accent animate-pulse"></span>
+      <span class="material-symbols-outlined text-text-main">admin_panel_settings</span>
+    </button>
+  </header>
+
+  <!-- Main -->
+  <main class="flex-1 pb-28">
+    <!-- Hero -->
+    <section class="p-5">
+      <div class="relative w-full h-[380px] rounded-2xl overflow-hidden shadow-lg group">
+        <div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
+          style="background-image:url('https://lh3.googleusercontent.com/aida-public/AB6AXuDwuctEegWlqt9k3zjfSul5DmlF7cWFdE783Jjj2sk92sxeLg5nmutW7s4c5ZZe8uI18Mde5NcJ9a_zWIVrO_KFAbFWEkFx8FLW9NnoIH2ngjYGOzhtxVCNyODEscjEmunDMem5Wmw_hrDJ9z8JtW9G3IIRbBhv50OMVnb17KTb6AjBQ4xrFVKOshWLdPobuQ25uvDFeUfsHugIT_4Kbps9VyVlSCP2CdF8mzmvinvENI69cwXBug_EP2BdEZsefvinHb62qDulOwjk')">
+        </div>
+        <div class="absolute inset-0 bg-gradient-to-t from-[#0d1c1b]/90 via-[#0d1c1b]/20 to-transparent"></div>
+        <div class="absolute bottom-0 left-0 w-full p-6 flex flex-col items-start gap-3">
+          <span class="inline-flex items-center gap-1 bg-accent text-white text-xs font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">
+            <span class="material-symbols-outlined text-[14px]">local_fire_department</span>Populaire
+          </span>
+          <h2 class="text-white text-4xl font-black leading-tight">Découvrez<br/>la Guadeloupe</h2>
+          <p class="text-gray-200 text-sm font-medium mb-1 max-w-[85%]">Réservez votre prochaine aventure en mer et explorez des îles paradisiaques.</p>
+          <button onclick="scrollToExcursions()" class="bg-primary hover:bg-primary-dark text-text-main font-bold py-3 px-6 rounded-xl w-full flex items-center justify-center gap-2 transition-all active:scale-95 shadow-[0_4px_14px_0_rgba(13,242,223,0.39)]">
+            Explorer les offres <span class="material-symbols-outlined text-sm">arrow_forward</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Barre de recherche -->
+    <div class="px-5 mb-5">
+      <div class="relative flex items-center">
+        <span class="absolute left-4 text-gray-400 material-symbols-outlined">search</span>
+        <input id="search-input" oninput="filterExcursions()" class="w-full pl-12 pr-10 py-3.5 bg-white border border-gray-100 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary/50 shadow-sm placeholder-gray-400 text-text-main" placeholder="Où voulez-vous aller ?" type="text"/>
+        <button class="absolute right-3 p-1.5 bg-background-light rounded-lg text-primary hover:text-accent transition-colors">
+          <span class="material-symbols-outlined text-[20px]">tune</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Filtres catégories -->
+    <div id="filter-tabs" class="flex gap-3 px-5 overflow-x-auto no-scrollbar pb-5">
+      <button onclick="setFilter('all',this)" class="flex-shrink-0 flex items-center gap-2 px-4 py-2.5 bg-text-main text-white rounded-full shadow-md whitespace-nowrap filter-btn active-filter">
+        <span class="material-symbols-outlined text-[18px]">directions_boat</span><span class="text-sm font-bold">Tous</span>
+      </button>
+      <button onclick="setFilter('catamaran',this)" class="flex-shrink-0 flex items-center gap-2 px-4 py-2.5 bg-white text-text-main border border-gray-100 rounded-full whitespace-nowrap hover:border-primary/50 filter-btn">
+        <span class="material-symbols-outlined text-[18px]">sailing</span><span class="text-sm font-medium">Catamaran</span>
+      </button>
+      <button onclick="setFilter('plongee',this)" class="flex-shrink-0 flex items-center gap-2 px-4 py-2.5 bg-white text-text-main border border-gray-100 rounded-full whitespace-nowrap hover:border-primary/50 filter-btn">
+        <span class="material-symbols-outlined text-[18px]">scuba_diving</span><span class="text-sm font-medium">Plongée</span>
+      </button>
+      <button onclick="setFilter('kayak',this)" class="flex-shrink-0 flex items-center gap-2 px-4 py-2.5 bg-white text-text-main border border-gray-100 rounded-full whitespace-nowrap hover:border-primary/50 filter-btn">
+        <span class="material-symbols-outlined text-[18px]">kayaking</span><span class="text-sm font-medium">Kayak</span>
+      </button>
+      <button onclick="setFilter('nature',this)" class="flex-shrink-0 flex items-center gap-2 px-4 py-2.5 bg-white text-text-main border border-gray-100 rounded-full whitespace-nowrap hover:border-primary/50 filter-btn">
+        <span class="material-symbols-outlined text-[18px]">forest</span><span class="text-sm font-medium">Nature</span>
+      </button>
+    </div>
+
+    <!-- Liste excursions -->
+    <section id="excursions-list" class="px-5 flex flex-col gap-4"></section>
+  </main>
+
+  <!-- Bottom Nav -->
+  <nav class="fixed bottom-0 z-50 w-full max-w-md bg-white border-t border-gray-100 pb-safe pt-2 px-6">
+    <div class="flex justify-between items-end pb-3">
+      <a class="flex flex-col items-center gap-1 text-primary">
+        <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">home</span>
+        <span class="text-[10px] font-bold">Accueil</span>
+      </a>
+      <a class="flex flex-col items-center gap-1 text-gray-400 hover:text-text-main">
+        <span class="material-symbols-outlined">search</span>
+        <span class="text-[10px] font-medium">Recherche</span>
+      </a>
+      <a onclick="goTo('screen-mybookings')" class="flex flex-col items-center gap-1 text-gray-400 hover:text-text-main cursor-pointer">
+        <span class="material-symbols-outlined">confirmation_number</span>
+        <span class="text-[10px] font-medium">Billets</span>
+      </a>
+      <a class="flex flex-col items-center gap-1 text-gray-400 hover:text-text-main">
+        <span class="material-symbols-outlined">account_circle</span>
+        <span class="text-[10px] font-medium">Profil</span>
+      </a>
+    </div>
+  </nav>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     ÉCRAN 2 — DÉTAILS EXCURSION
+═══════════════════════════════════════════════════════ -->
+<div id="screen-detail" class="screen max-w-md mx-auto bg-white shadow-xl relative">
+  <!-- Top Nav overlay -->
+  <nav class="fixed top-0 left-0 right-0 max-w-md mx-auto z-50 flex items-center justify-between px-4 py-4">
+    <button onclick="goBack()" class="flex items-center justify-center w-10 h-10 rounded-full bg-white/80 backdrop-blur-sm hover:bg-white transition-colors shadow-sm">
+      <span class="material-symbols-outlined text-gray-800" style="font-size:24px">arrow_back</span>
+    </button>
+    <div class="flex gap-3">
+      <button id="fav-btn" onclick="toggleFav()" class="flex items-center justify-center w-10 h-10 rounded-full bg-white/80 backdrop-blur-sm hover:bg-white transition-colors shadow-sm">
+        <span class="material-symbols-outlined text-gray-800" style="font-size:24px">favorite</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Hero image -->
+  <div class="relative w-full h-[55vh] min-h-[380px]">
+    <img id="detail-img" class="w-full h-full object-cover rounded-b-[2rem] shadow-xl" alt=""/>
+    <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/10 rounded-b-[2rem]"></div>
+    <div class="absolute bottom-6 left-0 right-0 px-5">
+      <div class="flex items-center gap-2 mb-2">
+        <span id="detail-badge" class="px-3 py-1 text-xs font-bold uppercase tracking-wider text-black bg-primary rounded-full shadow-lg"></span>
+        <span id="detail-type-badge" class="px-3 py-1 text-xs font-bold uppercase tracking-wider text-white bg-white/20 backdrop-blur-md border border-white/30 rounded-full"></span>
+      </div>
+      <h1 id="detail-title" class="text-3xl font-extrabold text-white leading-tight drop-shadow-sm mb-2"></h1>
+      <div class="flex items-center text-white/90 text-sm font-medium">
+        <span class="material-symbols-outlined mr-1 text-primary" style="font-size:20px">location_on</span>
+        <span id="detail-location"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contenu -->
+  <main class="px-5 py-6 space-y-7 max-w-2xl mx-auto pb-32">
+    <!-- Infos rapides -->
+    <div class="grid grid-cols-3 gap-3 fade-up">
+      <div class="flex flex-col items-center justify-center p-3 bg-white border border-gray-100 rounded-2xl shadow-sm">
+        <div class="p-2 mb-2 rounded-full bg-primary/10 text-primary-dark"><span class="material-symbols-outlined" style="font-size:24px">schedule</span></div>
+        <span class="text-xs text-gray-500 font-medium">Durée</span>
+        <span id="detail-duration" class="text-sm font-bold text-gray-900"></span>
+      </div>
+      <div class="flex flex-col items-center justify-center p-3 bg-white border border-gray-100 rounded-2xl shadow-sm">
+        <div class="p-2 mb-2 rounded-full bg-primary/10 text-primary-dark"><span class="material-symbols-outlined" style="font-size:24px">anchor</span></div>
+        <span class="text-xs text-gray-500 font-medium">Départ</span>
+        <span id="detail-depart" class="text-sm font-bold text-gray-900 text-center leading-tight"></span>
+      </div>
+      <div class="flex flex-col items-center justify-center p-3 bg-white border border-gray-100 rounded-2xl shadow-sm">
+        <div class="p-2 mb-2 rounded-full bg-primary/10 text-primary-dark"><span class="material-symbols-outlined" style="font-size:24px">group</span></div>
+        <span class="text-xs text-gray-500 font-medium">Capacité</span>
+        <span id="detail-capacity" class="text-sm font-bold text-gray-900"></span>
+      </div>
+    </div>
+
+    <!-- Note -->
+    <div class="flex items-center justify-between p-4 bg-white rounded-2xl shadow-sm border border-gray-100 fade-up anim-delay-1">
+      <div class="flex items-center gap-3">
+        <div class="flex items-center justify-center w-12 h-12 rounded-xl bg-primary text-black font-black text-xl shadow-lg shadow-primary/30">
+          <span id="detail-rating"></span>
+        </div>
+        <div>
+          <h3 class="font-bold text-gray-900">Excellent</h3>
+          <p id="detail-reviews" class="text-xs text-gray-500"></p>
+        </div>
+      </div>
+      <button class="text-sm font-bold text-primary-dark hover:underline">Voir les avis</button>
+    </div>
+
+    <!-- Description -->
+    <section class="fade-up anim-delay-2">
+      <h2 class="text-xl font-bold text-gray-900 mb-3">À propos de l'excursion</h2>
+      <p id="detail-desc" class="text-gray-600 leading-relaxed text-sm"></p>
+    </section>
+
+    <!-- Inclus -->
+    <section class="fade-up anim-delay-3">
+      <h2 class="text-xl font-bold text-gray-900 mb-4">Ce qui est inclus</h2>
+      <div id="detail-includes" class="space-y-3"></div>
+    </section>
+  </main>
+
+  <!-- Barre réservation -->
+  <div class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white border-t border-gray-100 p-4 pb-6 shadow-[0_-4px_20px_-4px_rgba(0,0,0,0.1)] z-40">
+    <div class="flex items-center justify-between gap-4">
+      <div class="flex flex-col">
+        <span class="text-xs text-gray-500 font-medium">Prix total</span>
+        <div class="flex items-baseline gap-1">
+          <span id="detail-price" class="text-2xl font-extrabold text-gray-900"></span>
+          <span class="text-sm text-gray-500 font-medium">/ pers</span>
+        </div>
+      </div>
+      <button onclick="goToReservation()" class="flex-1 bg-coral hover:bg-coral-dark text-white font-bold text-base py-3.5 px-6 rounded-xl shadow-lg shadow-coral/30 active:scale-95 transition-all flex items-center justify-center gap-2">
+        Réserver maintenant <span class="material-symbols-outlined" style="font-size:20px">arrow_forward</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     ÉCRAN 3 — FORMULAIRE DE RÉSERVATION
+═══════════════════════════════════════════════════════ -->
+<div id="screen-reservation" class="screen max-w-md mx-auto bg-background-light shadow-xl relative">
+
+  <!-- Top bar -->
+  <div class="sticky top-0 z-50 bg-background-light/90 backdrop-blur-md border-b border-primary/10">
+    <div class="flex items-center p-4 h-16 justify-between max-w-md mx-auto w-full">
+      <button onclick="goBack()" class="flex size-10 shrink-0 items-center justify-center rounded-full hover:bg-slate-100 transition-colors">
+        <span class="material-symbols-outlined">arrow_back_ios_new</span>
+      </button>
+      <h1 class="text-lg font-bold flex-1 text-center pr-10 truncate">Réservation</h1>
+    </div>
+  </div>
+
+  <main class="flex-1 flex flex-col w-full max-w-md mx-auto px-4 pb-32 overflow-y-auto no-scrollbar">
+    <!-- Récap excursion -->
+    <div class="mt-4 mb-6">
+      <div class="flex items-stretch justify-between gap-4 rounded-xl bg-white p-3 shadow-sm border border-slate-100">
+        <div class="flex flex-col justify-center gap-1 flex-[2_2_0px]">
+          <p class="text-primary-dark text-xs font-bold uppercase tracking-wider">Votre sélection</p>
+          <p id="resa-excursion-name" class="text-slate-900 text-base font-bold leading-tight"></p>
+          <div class="flex items-center gap-1 mt-1 text-slate-500">
+            <span class="material-symbols-outlined text-[16px]">location_on</span>
+            <p id="resa-excursion-loc" class="text-xs font-medium"></p>
+          </div>
+        </div>
+        <div id="resa-excursion-img" class="w-24 h-20 bg-center bg-no-repeat bg-cover rounded-lg flex-none"></div>
+      </div>
+    </div>
+
+    <!-- Formulaire -->
+    <div class="flex flex-col gap-6">
+      <!-- Coordonnées -->
+      <div>
+        <h3 class="text-slate-900 text-lg font-bold mb-4 flex items-center gap-2">
+          <span class="material-symbols-outlined text-primary">person</span>Vos Coordonnées
+        </h3>
+        <div class="space-y-4">
+          <div class="flex flex-col gap-1.5">
+            <label class="text-sm font-semibold text-slate-700">Nom complet</label>
+            <div class="relative">
+              <input id="f-name" class="w-full rounded-lg bg-white border border-slate-200 text-slate-900 placeholder:text-slate-400 focus:border-primary focus:ring-1 focus:ring-primary py-3 pl-4 pr-10 shadow-sm" placeholder="Jean Dupont" type="text"/>
+              <span class="material-symbols-outlined absolute right-3 top-3.5 text-slate-400 text-[20px] pointer-events-none">id_card</span>
+            </div>
+          </div>
+          <div class="flex flex-col gap-1.5">
+            <label class="text-sm font-semibold text-slate-700">Email</label>
+            <div class="relative">
+              <input id="f-email" class="w-full rounded-lg bg-white border border-slate-200 text-slate-900 placeholder:text-slate-400 focus:border-primary focus:ring-1 focus:ring-primary py-3 pl-4 pr-10 shadow-sm" placeholder="jean@example.com" type="email"/>
+              <span class="material-symbols-outlined absolute right-3 top-3.5 text-slate-400 text-[20px] pointer-events-none">mail</span>
+            </div>
+          </div>
+          <div class="flex flex-col gap-1.5">
+            <label class="text-sm font-semibold text-slate-700">Téléphone</label>
+            <div class="flex rounded-lg shadow-sm">
+              <span class="inline-flex items-center px-3 rounded-l-lg border border-r-0 border-slate-200 bg-slate-50 text-slate-500 sm:text-sm font-medium">+590</span>
+              <input id="f-phone" class="flex-1 px-3 py-3 rounded-none rounded-r-lg bg-white border border-slate-200 text-slate-900 placeholder:text-slate-400 focus:border-primary focus:ring-1 focus:ring-primary" placeholder="690 00 00 00" type="tel"/>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Détails sortie -->
+      <div>
+        <h3 class="text-slate-900 text-lg font-bold mb-4 flex items-center gap-2 pt-2">
+          <span class="material-symbols-outlined text-primary">sailing</span>Détails de la sortie
+        </h3>
+        <div class="space-y-4">
+          <div class="flex flex-col gap-1.5">
+            <label class="text-sm font-semibold text-slate-700">Date souhaitée</label>
+            <input id="f-date" class="w-full rounded-lg bg-white border border-slate-200 text-slate-900 focus:border-primary focus:ring-1 focus:ring-primary py-3 pl-4 pr-4 shadow-sm" type="date"/>
+          </div>
+          <div class="flex flex-col gap-1.5">
+            <label class="text-sm font-semibold text-slate-700">Nombre de passagers</label>
+            <div class="flex items-center justify-between bg-white border border-slate-200 rounded-lg p-2 shadow-sm">
+              <button onclick="changePax(-1)" class="size-10 rounded-lg bg-slate-100 text-coral hover:bg-coral/10 flex items-center justify-center transition-colors" type="button">
+                <span class="material-symbols-outlined">remove</span>
+              </button>
+              <div class="flex flex-col items-center">
+                <span id="pax-count" class="text-xl font-bold text-slate-900">2</span>
+                <span class="text-xs text-slate-500">Adultes</span>
+              </div>
+              <button onclick="changePax(1)" class="size-10 rounded-lg bg-primary/10 text-primary-dark hover:bg-primary/20 flex items-center justify-center transition-colors" type="button">
+                <span class="material-symbols-outlined">add</span>
+              </button>
+            </div>
+          </div>
+          <!-- Message optionnel -->
+          <div class="flex flex-col gap-1.5">
+            <label class="text-sm font-semibold text-slate-700">Message (optionnel)</label>
+            <textarea id="f-message" class="w-full rounded-lg bg-white border border-slate-200 text-slate-900 placeholder:text-slate-400 focus:border-primary focus:ring-1 focus:ring-primary py-3 px-4 shadow-sm resize-none" rows="3" placeholder="Allergies, demandes particulières…"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- Récap prix -->
+      <div class="bg-white rounded-xl p-4 border border-slate-100 shadow-sm">
+        <div class="flex justify-between text-sm mb-2">
+          <span class="text-slate-600">Prix par personne</span>
+          <span id="price-per" class="font-semibold text-slate-900"></span>
+        </div>
+        <div class="flex justify-between text-sm mb-3 pb-3 border-b border-slate-100">
+          <span class="text-slate-600">Passagers</span>
+          <span id="price-pax" class="font-semibold text-slate-900"></span>
+        </div>
+        <div class="flex justify-between font-bold">
+          <span class="text-slate-900">Total estimé</span>
+          <span id="price-total" class="text-primary-dark text-lg"></span>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Bas de page -->
+  <div class="fixed bottom-0 w-full z-40 bg-white/90 backdrop-blur-lg border-t border-slate-100 p-4 pb-8 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+    <div class="max-w-md mx-auto flex flex-col gap-3">
+      <button id="resa-error" class="text-red-500 text-sm font-medium hidden text-center"></button>
+      <button onclick="submitReservation()" class="w-full bg-primary hover:bg-[#0bead9] active:scale-[0.98] text-slate-900 text-lg font-bold py-4 rounded-xl shadow-[0_4px_14px_0_rgba(13,242,223,0.39)] transition-all flex items-center justify-center gap-2">
+        <span>Envoyer la demande</span>
+        <span class="material-symbols-outlined text-[20px]">send</span>
+      </button>
+      <div class="flex items-center justify-center gap-1.5 text-xs text-slate-500">
+        <span class="material-symbols-outlined text-[14px] text-primary">verified_user</span>
+        <span>Annulation gratuite jusqu'à 24h avant</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     ÉCRAN 4 — CONFIRMATION
+═══════════════════════════════════════════════════════ -->
+<div id="screen-confirmation" class="screen max-w-md mx-auto bg-white shadow-xl relative">
+  <header class="flex items-center justify-between p-4 sticky top-0 z-10 bg-white/90 backdrop-blur-md">
+    <div class="w-10"></div>
+    <h2 class="text-slate-800 text-lg font-bold flex-1 text-center">Confirmation</h2>
+    <div class="w-10"></div>
+  </header>
+
+  <main class="flex-1 flex flex-col items-center justify-center px-6 py-4 w-full max-w-md mx-auto relative">
+    <div class="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 -z-10"></div>
+    <div class="absolute bottom-0 left-0 w-48 h-48 bg-accent/10 rounded-full blur-2xl translate-y-1/2 -translate-x-1/2 -z-10"></div>
+
+    <div class="flex flex-col items-center gap-6 mb-8 w-full">
+      <div class="relative scale-in">
+        <div class="absolute inset-0 bg-primary/30 rounded-full blur-xl animate-pulse"></div>
+        <div class="relative flex items-center justify-center w-24 h-24 rounded-full bg-gradient-to-tr from-primary to-[#00d4c0] shadow-lg shadow-primary/25">
+          <span class="material-symbols-outlined text-background-dark text-[48px] font-bold">check</span>
+        </div>
+      </div>
+      <div class="flex flex-col items-center gap-3 text-center fade-up">
+        <h1 class="text-slate-900 text-3xl font-extrabold tracking-tight">Demande Envoyée !</h1>
+        <div class="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-slate-50 border border-primary/20">
+          <span class="material-symbols-outlined text-accent text-lg">schedule</span>
+          <span class="text-accent text-sm font-bold tracking-wide uppercase">En attente</span>
+        </div>
+      </div>
+      <p class="text-slate-600 text-base font-medium leading-relaxed text-center max-w-xs fade-up anim-delay-1">
+        Merci pour votre demande. Votre réservation est en attente de validation par l'équipage.
+      </p>
+      <p class="text-slate-500 text-sm text-center max-w-xs fade-up anim-delay-2">
+        Vous recevrez un email de confirmation dès qu'elle sera approuvée.
+      </p>
+    </div>
+
+    <!-- Récap réservation -->
+    <div id="confim-card" class="w-full bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden mb-6 fade-up anim-delay-3">
+      <div class="relative h-32 w-full">
+        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10"></div>
+        <div id="confirm-img" class="w-full h-full bg-cover bg-center"></div>
+        <div class="absolute bottom-3 left-4 right-4 z-20">
+          <p class="text-white text-xs font-medium opacity-90 uppercase tracking-wider mb-0.5">Excursion</p>
+          <p id="confirm-title" class="text-white text-lg font-bold leading-tight"></p>
+        </div>
+      </div>
+      <div class="p-4 flex flex-col gap-3">
+        <div class="flex items-start gap-3">
+          <div class="p-2 rounded-lg bg-slate-50 text-primary"><span class="material-symbols-outlined text-xl">calendar_month</span></div>
+          <div>
+            <p class="text-xs text-slate-500 font-semibold uppercase">Date</p>
+            <p id="confirm-date" class="text-slate-800 font-bold"></p>
+          </div>
+        </div>
+        <div class="flex items-start gap-3">
+          <div class="p-2 rounded-lg bg-slate-50 text-primary"><span class="material-symbols-outlined text-xl">group</span></div>
+          <div>
+            <p class="text-xs text-slate-500 font-semibold uppercase">Voyageurs</p>
+            <p id="confirm-pax" class="text-slate-800 font-bold"></p>
+          </div>
+        </div>
+        <div class="flex items-start gap-3">
+          <div class="p-2 rounded-lg bg-slate-50 text-primary"><span class="material-symbols-outlined text-xl">euro</span></div>
+          <div>
+            <p class="text-xs text-slate-500 font-semibold uppercase">Total</p>
+            <p id="confirm-total" class="text-slate-800 font-bold"></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <div class="sticky bottom-0 w-full bg-white/80 backdrop-blur-xl border-t border-slate-100 p-4 pb-8 flex flex-col gap-3 z-20">
+    <button onclick="goTo('screen-home')" class="w-full h-12 flex items-center justify-center rounded-xl bg-primary hover:bg-[#0be0ce] active:scale-[0.98] transition-all text-background-dark text-base font-bold shadow-lg shadow-primary/20">
+      Retour à l'accueil
+    </button>
+    <button onclick="goTo('screen-mybookings')" class="w-full h-12 flex items-center justify-center rounded-xl bg-transparent hover:bg-slate-50 text-slate-600 text-base font-semibold transition-colors">
+      Voir mes réservations
+    </button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     ÉCRAN 5 — MES RÉSERVATIONS (côté client)
+═══════════════════════════════════════════════════════ -->
+<div id="screen-mybookings" class="screen max-w-md mx-auto bg-background-light shadow-xl relative">
+  <header class="sticky top-0 z-50 bg-background-light/95 backdrop-blur-sm px-4 pt-5 pb-3 border-b border-gray-100">
+    <div class="flex items-center gap-3">
+      <button onclick="goBack()" class="flex items-center justify-center w-10 h-10 rounded-full bg-white shadow-sm text-text-main">
+        <span class="material-symbols-outlined">arrow_back</span>
+      </button>
+      <h1 class="text-xl font-bold text-text-main">Mes Billets</h1>
+    </div>
+  </header>
+  <main class="flex-1 overflow-y-auto px-4 pb-10">
+    <div id="mybookings-list" class="flex flex-col gap-4 mt-4"></div>
+    <div id="mybookings-empty" class="hidden flex flex-col items-center justify-center py-20 text-center">
+      <span class="material-symbols-outlined text-5xl text-gray-300 mb-3">confirmation_number</span>
+      <p class="text-gray-500 font-medium">Aucune réservation pour l'instant</p>
+      <button onclick="goTo('screen-home')" class="mt-4 px-6 py-2.5 bg-primary text-text-main rounded-full font-bold text-sm">Découvrir les excursions</button>
+    </div>
+  </main>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     ÉCRAN 6 — TABLEAU DE BORD ADMIN
+═══════════════════════════════════════════════════════ -->
+<div id="screen-admin" class="screen max-w-md mx-auto bg-background-light shadow-xl relative">
+
+  <header class="sticky top-0 z-50 bg-background-light/95 backdrop-blur-sm px-4 pt-6 pb-2 border-b border-gray-100">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <button onclick="goBack()" class="flex items-center justify-center w-10 h-10 rounded-full bg-white shadow-sm text-text-main">
+          <span class="material-symbols-outlined">arrow_back</span>
+        </button>
+        <div>
+          <p class="text-xs font-semibold text-primary uppercase tracking-wider">Admin</p>
+          <h1 class="text-xl font-bold leading-none text-text-main">Tableau de Bord</h1>
+        </div>
+      </div>
+      <div class="relative">
+        <div id="admin-notif-dot" class="flex items-center justify-center w-10 h-10 rounded-full bg-white shadow-sm text-text-main relative">
+          <span class="material-symbols-outlined">notifications</span>
+          <span id="admin-pending-badge" class="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-accent rounded-full border-2 border-white text-white text-[10px] font-bold flex items-center justify-center px-1"></span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-1 overflow-y-auto pb-28">
+    <!-- Date et accueil -->
+    <div class="px-4 py-4">
+      <p id="admin-date" class="text-text-secondary text-sm"></p>
+      <h2 class="text-2xl font-extrabold text-text-main mt-1">Bonjour, Admin 👋</h2>
+    </div>
+
+    <!-- Stats -->
+    <div class="flex gap-3 px-4 overflow-x-auto pb-4 no-scrollbar">
+      <div class="flex-1 min-w-[110px] bg-white p-4 rounded-xl shadow-card border-l-4 border-accent flex flex-col justify-between h-28">
+        <span class="p-1.5 bg-accent/10 rounded-md text-accent w-fit"><span class="material-symbols-outlined text-[20px]">pending_actions</span></span>
+        <div>
+          <p id="stat-pending" class="text-3xl font-bold text-text-main">0</p>
+          <p class="text-xs font-medium text-text-secondary mt-1">En attente</p>
+        </div>
+      </div>
+      <div class="flex-1 min-w-[110px] bg-white p-4 rounded-xl shadow-card border-l-4 border-primary flex flex-col justify-between h-28">
+        <span class="p-1.5 bg-primary/10 rounded-md text-primary-dark w-fit"><span class="material-symbols-outlined text-[20px]">check_circle</span></span>
+        <div>
+          <p id="stat-approved" class="text-3xl font-bold text-text-main">0</p>
+          <p class="text-xs font-medium text-text-secondary mt-1">Confirmés</p>
+        </div>
+      </div>
+      <div class="flex-1 min-w-[110px] bg-white p-4 rounded-xl shadow-card border-l-4 border-gray-300 flex flex-col justify-between h-28">
+        <span class="p-1.5 bg-gray-100 rounded-md text-gray-500 w-fit"><span class="material-symbols-outlined text-[20px]">bar_chart</span></span>
+        <div>
+          <p id="stat-total" class="text-3xl font-bold text-text-main">0</p>
+          <p class="text-xs font-medium text-text-secondary mt-1">Total</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filtre -->
+    <div class="flex gap-2 px-4 overflow-x-auto no-scrollbar pb-3">
+      <button onclick="setAdminFilter('all',this)" class="admin-filter active-admin-filter flex-shrink-0 px-4 py-1.5 rounded-full text-xs font-bold bg-text-main text-white">Toutes</button>
+      <button onclick="setAdminFilter('pending',this)" class="admin-filter flex-shrink-0 px-4 py-1.5 rounded-full text-xs font-bold bg-white text-text-main border border-gray-200">En attente</button>
+      <button onclick="setAdminFilter('approved',this)" class="admin-filter flex-shrink-0 px-4 py-1.5 rounded-full text-xs font-bold bg-white text-text-main border border-gray-200">Confirmées</button>
+      <button onclick="setAdminFilter('refused',this)" class="admin-filter flex-shrink-0 px-4 py-1.5 rounded-full text-xs font-bold bg-white text-text-main border border-gray-200">Refusées</button>
+    </div>
+
+    <!-- Liste demandes -->
+    <div class="flex items-center justify-between px-4 mt-2 mb-3">
+      <h3 class="text-lg font-bold text-text-main">Demandes</h3>
+    </div>
+    <div id="admin-list" class="flex flex-col gap-4 px-4"></div>
+    <div id="admin-empty" class="hidden flex-col items-center justify-center py-16 opacity-60">
+      <span class="material-symbols-outlined text-4xl text-gray-300 mb-2">done_all</span>
+      <p class="text-sm text-text-secondary">Aucune demande ici</p>
+    </div>
+  </main>
+
+  <!-- Bottom Nav admin -->
+  <nav class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white border-t border-gray-100 pb-safe pt-2 px-6 h-20 shadow-[0_-4px_20px_-4px_rgba(0,0,0,0.05)]">
+    <div class="flex justify-between items-center h-full pb-2">
+      <button class="flex flex-col items-center gap-1 w-16 text-primary">
+        <span class="material-symbols-outlined">dashboard</span>
+        <span class="text-[10px] font-bold">Accueil</span>
+      </button>
+      <button class="flex flex-col items-center gap-1 w-16 text-gray-400">
+        <span class="material-symbols-outlined">calendar_month</span>
+        <span class="text-[10px] font-medium">Agenda</span>
+      </button>
+      <button class="flex flex-col items-center gap-1 w-16 text-gray-400">
+        <span class="material-symbols-outlined">directions_boat</span>
+        <span class="text-[10px] font-medium">Bateaux</span>
+      </button>
+      <button class="flex flex-col items-center gap-1 w-16 text-gray-400">
+        <span class="material-symbols-outlined">settings</span>
+        <span class="text-[10px] font-medium">Réglages</span>
+      </button>
+    </div>
+  </nav>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     JAVASCRIPT
+═══════════════════════════════════════════════════════ -->
+
+
+<!-- Supabase + QR Code -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+
+<!-- Modal QR Code -->
+<div id="qr-modal" class="fixed inset-0 z-[200] hidden items-center justify-center bg-black/60 backdrop-blur-sm px-6">
+  <div class="bg-white rounded-2xl p-6 w-full max-w-xs shadow-2xl flex flex-col items-center gap-4">
+    <div class="flex items-center justify-between w-full">
+      <h3 class="font-extrabold text-text-main text-lg">QR Code de l'app</h3>
+      <button onclick="closeQR()" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100">
+        <span class="material-symbols-outlined text-gray-500">close</span>
+      </button>
+    </div>
+    <canvas id="qr-canvas" class="rounded-xl"></canvas>
+    <p id="qr-url" class="text-xs text-center text-gray-500 break-all"></p>
+    <p class="text-xs text-center text-gray-400">Scannez pour ouvrir l'app sur mobile</p>
+    <button onclick="downloadQR()" class="w-full flex items-center justify-center gap-2 bg-primary text-text-main font-bold py-2.5 rounded-xl hover:bg-primary-dark transition-colors">
+      <span class="material-symbols-outlined text-[18px]">download</span>Télécharger le QR
+    </button>
+  </div>
+</div>
+
+<!-- Bannière PWA install -->
+<div id="pwa-banner" class="hidden fixed bottom-24 left-1/2 -translate-x-1/2 z-[100] w-[calc(100%-2rem)] max-w-md bg-white rounded-2xl shadow-xl border border-primary/20 p-4 flex items-center gap-3">
+  <div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+    <span class="material-symbols-outlined text-primary-dark text-2xl">sailing</span>
+  </div>
+  <div class="flex-1">
+    <p class="font-bold text-text-main text-sm">Installer GwadaTrip</p>
+    <p class="text-xs text-gray-500">Accès rapide depuis votre écran d'accueil</p>
+  </div>
+  <div class="flex gap-2">
+    <button onclick="document.getElementById('pwa-banner').classList.add('hidden')" class="text-xs text-gray-400 font-medium px-2">Non merci</button>
+    <button id="pwa-install-btn" class="text-xs bg-primary text-text-main font-bold px-3 py-1.5 rounded-lg">Installer</button>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════════
+// CONFIGURATION SUPABASE
+// Remplacez les deux valeurs ci-dessous par vos clés (Project Settings > API)
+// ═══════════════════════════════════════════════════════════════════
+const SUPABASE_URL     = https://iqxbzniqpwhovzruoeony.supabase.co;       // ex: https://xxxx.supabase.co
+const SUPABASE_ANON_KEY = sb_publishable_s9CP4y4UWdrhB2gVMyA9Lw_IJKqNJyJ; // clé publique anon
+
+const supabaseReady = SUPABASE_URL !== 'VOTRE_SUPABASE_URL';
+const db = supabaseReady
+  ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+  : null;
+
+// ═══════════════════════════════════════════════════════════════════
+// DONNÉES EXCURSIONS
+// ═══════════════════════════════════════════════════════════════════
+const EXCURSIONS = [
+  {
+    id: 1, name: "Journée Découverte des Saintes",
+    location: "Terre-de-Haut, Guadeloupe", depart: "Trois-Rivières",
+    duration: "8h00", capacity: "Max 12", price: 75,
+    rating: "4.8", reviews: "Basé sur 124 avis", category: "catamaran",
+    badge: "Bestseller", typeBadge: "Catamaran",
+    img: "https://lh3.googleusercontent.com/aida-public/AB6AXuAsVp7fCET0_YwpuVmFm2NqxMjlYPiBQ3MnqH_n8obAIWu4lfZ8QKHn5MV_0jM73731B-qkIPPpNpJcr5Qn3v4DFLHO2MkYvxj4HgsE_17_Fai9NYE8OrksFdjjcW2azGCsylM18Jg6PNA-0oKfWaEUmTqs4FtUVn-LC9d6kdGkp-dvKEBcuJYnGuZItAOzpFM3nM1evzvSFpZm-cw2qUcyvlgff9vmtL-CVM0EzteEuUlmAe2ksYSww2oz13eEvXo1He50xaNhiSnm",
+    description: "Profitez d'une navigation inoubliable vers l'une des plus belles baies du monde. Départ matinal de Trois-Rivières pour une traversée rapide en catamaran. Une fois sur place, explorez le Fort Napoléon, baignez-vous sur la plage de Pompierre et dégustez les fameux tourments d'amour.",
+    includes: [
+      {icon:"restaurant",title:"Déjeuner local",desc:"Repas créole complet avec boissons incluses."},
+      {icon:"sailing",title:"Équipement de snorkeling",desc:"Masques et tubas fournis pour la baignade."},
+      {icon:"local_activity",title:"Guide local",desc:"Commentaires et anecdotes sur l'archipel."}
+    ]
+  },
+  {
+    id: 2, name: "Plongée Petite Terre",
+    location: "Réserve Naturelle, Guadeloupe", depart: "Saint-François",
+    duration: "6h00", capacity: "Max 8", price: 89,
+    rating: "4.9", reviews: "Basé sur 87 avis", category: "plongee",
+    badge: "Populaire", typeBadge: "Plongée",
+    img: "https://lh3.googleusercontent.com/aida-public/AB6AXuDgD--EYkFNM5QYXco5h8KLsIuDnhfdgRQXz_tV27bPaJPYVmvXrWkzWQQfILbtujc0MLcL_dSk6929qSvlxMwoHK-fSrHUTFizEwxKBIWWhR4cWZJi6tyFz3RXjBt9BurPZo3DE8fgrFBCp8vu4CL4JOsneZjeNizm1VuJnQ7R0ATCviDuwNtvckzH2m0CEBHsFGjO5C8k2eBaj9UgQRo9q2A1ulIz3S8GteI-a3DkN_QObziBAe0iXGwwz4ZdG7W1EWHtA3bBuRGi",
+    description: "Explorez les eaux cristallines de la Réserve Naturelle de Petite Terre. Rencontrez iguanes, tortues marines et une faune sous-marine exceptionnelle. Un paradis pour les plongeurs et amateurs de snorkeling.",
+    includes: [
+      {icon:"scuba_diving",title:"Équipement de plongée",desc:"Combinaisons, bouteilles et palmes inclus."},
+      {icon:"local_activity",title:"Moniteur diplômé",desc:"Encadrement par un moniteur PADI certifié."},
+      {icon:"restaurant",title:"Pique-nique",desc:"Collation et boissons fraîches fournies."}
+    ]
+  },
+  {
+    id: 3, name: "Kayak Mangrove",
+    location: "Grand Cul-de-Sac Marin", depart: "Morne-à-l'Eau",
+    duration: "4h00", capacity: "Max 10", price: 45,
+    rating: "4.7", reviews: "Basé sur 62 avis", category: "kayak",
+    badge: "Éco", typeBadge: "Kayak",
+    img: "https://lh3.googleusercontent.com/aida-public/AB6AXuACUPNZwPnNRO2XXbhYjBHmE87mC6PPLkGKmlTKRb5uvx7XWZV82tlBauWh78KFSDrxk6h-upS23I3mDCQ8dIYH9Zp7MObJ27tfv_x2LLd28zX0T9xZcrmJ22yvGyTxXOs_x1vOxUqxxL9THejilRd92NxP8e1K5fR7rtTwSv0GDf0cy2icJRr-7hnmI14AQW8FdK4-Bf97o47EUalBnAO81_2et4D1__zTSLHYF-OplTPzc6CpxSRXpJlORGJpE1zajwG1wx3t3Ra_",
+    description: "Pagayez en silence dans les canaux de la mangrove du Grand Cul-de-Sac Marin. Cette sortie écologique vous plonge au cœur d'un écosystème unique, riche en oiseaux tropicaux et en biodiversité marine.",
+    includes: [
+      {icon:"kayaking",title:"Kayak et pagaies",desc:"Matériel de qualité fourni et sécurisé."},
+      {icon:"local_activity",title:"Guide naturaliste",desc:"Explications sur la faune et la flore locale."},
+      {icon:"water",title:"Eau et collation",desc:"Hydratation et snack inclus."}
+    ]
+  },
+  {
+    id: 4, name: "Coucher de Soleil en Voilier",
+    location: "Gosier, Guadeloupe", depart: "Marina du Gosier",
+    duration: "3h00", capacity: "Max 6", price: 65,
+    rating: "5.0", reviews: "Basé sur 41 avis", category: "catamaran",
+    badge: "Coup de coeur", typeBadge: "Voile",
+    img: "https://lh3.googleusercontent.com/aida-public/AB6AXuBt246LFhvej_Lkawk8aHvP8ek0pmw2-zXCSXTTP-I6NpnsDOEcp4P_roAPzn9NAXr6cRtsH_z-Zh4TuhFnyY8qsWetNgi0noHnLO3YAEBO7vaqCF6QkuoDJVIAJXd8pD0MYTFK6oFqvq4GGvX04KlAG6QNGqeONAaCYEFzyGgvaopMF8kxXgVreKkdBeVs8PE_FBHzhM9QSBnY9pcve0L3WZ-z4OZiC7bn6RXv1pJGpi8Z_Ef3QsepXHpu0nLXLk-5M1ygGZp6-tmX",
+    description: "Embarquez pour une croisière magique au coucher du soleil sur les eaux dorées de la Guadeloupe. Champagne, apéritif créole et vue imprenable sur les îlets. La sortie romantique par excellence.",
+    includes: [
+      {icon:"wine_bar",title:"Champagne et apéritif",desc:"Ti-punch et champagne offerts à bord."},
+      {icon:"music_note",title:"Ambiance musicale",desc:"Musique live ou playlist créole."},
+      {icon:"photo_camera",title:"Photos souvenir",desc:"Session photo incluse au coucher du soleil."}
+    ]
+  },
+  {
+    id: 5, name: "Randonnée Volcanique Soufrière",
+    location: "Basse-Terre, Guadeloupe", depart: "Saint-Claude",
+    duration: "7h00", capacity: "Max 15", price: 55,
+    rating: "4.6", reviews: "Basé sur 93 avis", category: "nature",
+    badge: "Aventure", typeBadge: "Randonnée",
+    img: "https://lh3.googleusercontent.com/aida-public/AB6AXuD0P1hRDgcJTfyfGEPA9_4vVqVmQ8Jvo8XKuBW-b9xFe6KFuuPgHW6OMvahcX8KZl3fBtXjrHhR_LTUvNZGY3mZ2wHN6xNxUE0XqHFJfYm8_xJNt4H_WT1a-HnNB5U-fxCtnDCg2uqJQdBBp4SqBCNhAmB4z_n2HsqFNvzCWCQ5zG2z1CwkHCQxiqL4_Fq1UCbM6u7lKSnb5aJBvXaJhV_QE5VnHixnLhCH19S8Ua3nUCrGV7nJLGlbZI8_CWl9Fg1Q4Y9B2",
+    description: "Grimpez jusqu'au sommet de la Soufrière, le volcan actif des Caraïbes. Des paysages lunaires et une vue à 360° sur l'archipel guadeloupéen vous attendent au bout d'un effort qui en vaut la peine.",
+    includes: [
+      {icon:"hiking",title:"Guide montagne certifié",desc:"Encadrement sécurisé sur tout le parcours."},
+      {icon:"restaurant",title:"Pique-nique créole",desc:"Repas et eau inclus pendant la randonnée."},
+      {icon:"backpack",title:"Équipement de randonnée",desc:"Bâtons et poncho de pluie disponibles."}
+    ]
+  },
+  {
+    id: 6, name: "Marie-Galante en Catamaran",
+    location: "Marie-Galante, Guadeloupe", depart: "Pointe-à-Pitre",
+    duration: "10h00", capacity: "Max 14", price: 95,
+    rating: "4.9", reviews: "Basé sur 55 avis", category: "catamaran",
+    badge: "Best-seller", typeBadge: "Catamaran",
+    img: "https://lh3.googleusercontent.com/aida-public/AB6AXuCszS0lkEeEWXGy7ZaHJFyigf7lqsFyLtTs7ek1Qt05tDZBvf1qfct4hZw23aXfBYulj71IHZikjX9ZuBcVANMZeMzVerF5ER32DEBQF7uG1lwNZLEnDEStQrIicICj4iwZUIhJsrzrcj0O4hENSZLWKsIGSqkh5JabCvcvOXjaeGg_I6iX7yr0ib7rwvIagLAiY3gi1n56reqax7dADz_1Eo2jV3bbICbah3FDNMz2lFrP-SZriFcwhf1HquKZnxUlNXahbmA0jyjF",
+    description: "Naviguer jusqu'à Marie-Galante, l'île aux 100 moulins. Plages immenses de sable blanc, distilleries de rhum et baignade en eau turquoise. Un voyage dans le temps au coeur des Antilles authentiques.",
+    includes: [
+      {icon:"restaurant",title:"Déjeuner gastronomique",desc:"Menu créole 3 services sur place."},
+      {icon:"wine_bar",title:"Dégustation rhum",desc:"Visite d'une distillerie avec dégustation."},
+      {icon:"sailing",title:"Navigation en catamaran",desc:"Bateau confortable avec pont de soleil."}
+    ]
+  }
+];
+
+// ═══════════════════════════════════════════════════════════════════
+// ÉTAT
+// ═══════════════════════════════════════════════════════════════════
+let currentExcursion = null;
+let currentFilter    = 'all';
+let currentAdminFilter = 'all';
+let paxCount = 2;
+let favs    = JSON.parse(localStorage.getItem('gwada_favs') || '[]');
+let navHistory = [];
+
+// ═══════════════════════════════════════════════════════════════════
+// SUPABASE — helpers async
+// ═══════════════════════════════════════════════════════════════════
+async function dbGetBookings() {
+  if (supabaseReady) {
+    const {data, error} = await db.from('bookings').select('*').order('created_at', {ascending: false});
+    if (!error && data) return data.map(norm);
+  }
+  return JSON.parse(localStorage.getItem('gwada_bookings') || '[]');
+}
+
+async function dbSaveBooking(b) {
+  if (supabaseReady) {
+    const {error} = await db.from('bookings').insert({
+      excursion_id: b.excursionId, excursion_name: b.excursionName,
+      excursion_img: b.excursionImg, location: b.location,
+      name: b.name, email: b.email, phone: b.phone||'',
+      message: b.message||'', date: b.date, pax: b.pax,
+      price_per_pax: b.pricePerPax, total: b.total, status: 'pending'
+    });
+    if (error) { console.error('Supabase:', error); return false; }
+    return true;
+  }
+  const list = JSON.parse(localStorage.getItem('gwada_bookings')||'[]');
+  list.unshift({...b, id: Date.now(), status:'pending', createdAt: new Date().toISOString()});
+  localStorage.setItem('gwada_bookings', JSON.stringify(list));
+  return true;
+}
+
+async function dbUpdateStatus(id, status) {
+  if (supabaseReady) {
+    await db.from('bookings').update({status}).eq('id', id);
+    return;
+  }
+  const list = JSON.parse(localStorage.getItem('gwada_bookings')||'[]');
+  const i = list.findIndex(b => b.id === id);
+  if (i > -1) { list[i].status = status; localStorage.setItem('gwada_bookings', JSON.stringify(list)); }
+}
+
+// Normalise snake_case Supabase -> camelCase UI
+function norm(b) {
+  return {
+    id:            b.id,
+    excursionId:   b.excursion_id   ?? b.excursionId,
+    excursionName: b.excursion_name ?? b.excursionName,
+    excursionImg:  b.excursion_img  ?? b.excursionImg,
+    location:      b.location,
+    name:          b.name, email: b.email, phone: b.phone,
+    message:       b.message, date: b.date, pax: b.pax,
+    pricePerPax:   b.price_per_pax  ?? b.pricePerPax,
+    total:         b.total, status: b.status,
+    createdAt:     b.created_at     ?? b.createdAt
+  };
+}
+
+// Fallback sync (pour les fonctions qui n'ont pas encore été converties)
+function getBookings()   { return JSON.parse(localStorage.getItem('gwada_bookings')||'[]'); }
+function saveBookings(b) { localStorage.setItem('gwada_bookings', JSON.stringify(b)); }
+
+// ═══════════════════════════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════════════════════════
+function goTo(screenId) {
+  const cur = document.querySelector('.screen.active');
+  if (cur) { navHistory.push(cur.id); cur.classList.remove('active'); }
+  document.getElementById(screenId).classList.add('active');
+  window.scrollTo(0,0);
+  if (screenId === 'screen-admin')      refreshAdmin();
+  if (screenId === 'screen-mybookings') refreshMyBookings();
+}
+
+function goBack() {
+  const prev = navHistory.pop() || 'screen-home';
+  const cur  = document.querySelector('.screen.active');
+  if (cur) cur.classList.remove('active');
+  document.getElementById(prev).classList.add('active');
+  window.scrollTo(0,0);
+  if (prev === 'screen-admin')      refreshAdmin();
+  if (prev === 'screen-mybookings') refreshMyBookings();
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// ACCUEIL
+// ═══════════════════════════════════════════════════════════════════
+function renderExcursions(list) {
+  const c = document.getElementById('excursions-list');
+  if (!list.length) {
+    c.innerHTML = `<div class="text-center py-16 text-gray-400">
+      <span class="material-symbols-outlined text-4xl">search_off</span>
+      <p class="mt-2 font-medium">Aucun résultat</p></div>`;
+    return;
+  }
+  c.innerHTML = list.map((e,i) => `
+    <div onclick="openDetail(${e.id})" class="bg-white rounded-2xl overflow-hidden shadow-card hover:shadow-soft transition-all cursor-pointer fade-up" style="animation-delay:${i*0.05}s">
+      <div class="relative h-48">
+        <img src="${e.img}" alt="${e.name}" class="w-full h-full object-cover" loading="lazy"/>
+        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+        <div class="absolute top-3 left-3">
+          <span class="px-2.5 py-1 text-xs font-bold uppercase tracking-wider text-black bg-primary rounded-full">${e.badge}</span>
+        </div>
+        <div class="absolute top-3 right-3 bg-white/20 backdrop-blur-md text-white text-xs font-bold px-2 py-1 rounded-lg border border-white/30">${e.rating} ★</div>
+      </div>
+      <div class="p-4">
+        <div class="flex items-start justify-between gap-2">
+          <div>
+            <h4 class="font-extrabold text-text-main text-base leading-tight mb-1">${e.name}</h4>
+            <div class="flex items-center gap-1 text-text-secondary text-xs">
+              <span class="material-symbols-outlined text-[14px]">location_on</span>${e.location}
+            </div>
+          </div>
+          <div class="flex flex-col items-end shrink-0">
+            <span class="text-xl font-extrabold text-text-main">${e.price}€</span>
+            <span class="text-xs text-gray-400">/ pers</span>
+          </div>
+        </div>
+        <div class="flex items-center gap-3 mt-3 pt-3 border-t border-gray-50">
+          <div class="flex items-center gap-1 text-xs text-text-secondary">
+            <span class="material-symbols-outlined text-[14px] text-primary-dark">schedule</span>${e.duration}
+          </div>
+          <div class="flex items-center gap-1 text-xs text-text-secondary">
+            <span class="material-symbols-outlined text-[14px] text-primary-dark">group</span>${e.capacity}
+          </div>
+          <span class="ml-auto px-2 py-0.5 bg-primary/10 text-primary-dark text-xs font-semibold rounded-full">${e.typeBadge}</span>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function setFilter(cat, btn) {
+  currentFilter = cat;
+  document.querySelectorAll('.filter-btn').forEach(b => {
+    b.classList.remove('bg-text-main','text-white');
+    b.classList.add('bg-white','text-text-main','border','border-gray-100');
+  });
+  btn.classList.add('bg-text-main','text-white');
+  btn.classList.remove('bg-white','text-text-main','border','border-gray-100');
+  filterExcursions();
+}
+
+function filterExcursions() {
+  const q = (document.getElementById('search-input').value||'').toLowerCase();
+  let list = EXCURSIONS;
+  if (currentFilter !== 'all') list = list.filter(e => e.category === currentFilter);
+  if (q) list = list.filter(e => e.name.toLowerCase().includes(q) || e.location.toLowerCase().includes(q));
+  renderExcursions(list);
+}
+
+function scrollToExcursions() {
+  document.getElementById('excursions-list').scrollIntoView({behavior:'smooth'});
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// DÉTAIL
+// ═══════════════════════════════════════════════════════════════════
+function openDetail(id) {
+  const e = EXCURSIONS.find(x => x.id === id);
+  currentExcursion = e;
+  document.getElementById('detail-img').src = e.img;
+  document.getElementById('detail-badge').textContent = e.badge;
+  document.getElementById('detail-type-badge').textContent = e.typeBadge;
+  document.getElementById('detail-title').textContent = e.name;
+  document.getElementById('detail-location').textContent = e.location;
+  document.getElementById('detail-duration').textContent = e.duration;
+  document.getElementById('detail-depart').textContent = e.depart;
+  document.getElementById('detail-capacity').textContent = e.capacity;
+  document.getElementById('detail-rating').textContent = e.rating;
+  document.getElementById('detail-reviews').textContent = e.reviews;
+  document.getElementById('detail-desc').textContent = e.description;
+  document.getElementById('detail-price').textContent = e.price + '€';
+  document.getElementById('detail-includes').innerHTML = e.includes.map(inc => `
+    <div class="flex items-start gap-3">
+      <div class="mt-0.5 min-w-[20px] text-primary-dark"><span class="material-symbols-outlined" style="font-size:20px">${inc.icon}</span></div>
+      <div><h4 class="text-sm font-bold text-gray-900">${inc.title}</h4><p class="text-xs text-gray-500">${inc.desc}</p></div>
+    </div>`).join('');
+  const favSpan = document.getElementById('fav-btn').querySelector('span');
+  favSpan.style.color = favs.includes(e.id) ? '#ef4444' : '';
+  favSpan.style.fontVariationSettings = favs.includes(e.id) ? "'FILL' 1" : "'FILL' 0";
+  goTo('screen-detail');
+}
+
+function toggleFav() {
+  if (!currentExcursion) return;
+  const idx = favs.indexOf(currentExcursion.id);
+  const s = document.getElementById('fav-btn').querySelector('span');
+  if (idx > -1) {
+    favs.splice(idx, 1);
+    s.style.color = ''; s.style.fontVariationSettings = "'FILL' 0";
+  } else {
+    favs.push(currentExcursion.id);
+    s.style.color = '#ef4444'; s.style.fontVariationSettings = "'FILL' 1";
+  }
+  localStorage.setItem('gwada_favs', JSON.stringify(favs));
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// RÉSERVATION
+// ═══════════════════════════════════════════════════════════════════
+function goToReservation() {
+  if (!currentExcursion) return;
+  paxCount = 2;
+  ['f-name','f-email','f-phone','f-message','f-date'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  document.getElementById('resa-error').classList.add('hidden');
+  document.getElementById('resa-excursion-name').textContent = currentExcursion.name;
+  document.getElementById('resa-excursion-loc').textContent  = 'Départ de ' + currentExcursion.depart;
+  document.getElementById('resa-excursion-img').style.backgroundImage = `url('${currentExcursion.img}')`;
+  document.getElementById('pax-count').textContent = paxCount;
+  updatePriceDisplay();
+  goTo('screen-reservation');
+}
+
+function changePax(delta) {
+  paxCount = Math.max(1, Math.min(12, paxCount + delta));
+  document.getElementById('pax-count').textContent = paxCount;
+  updatePriceDisplay();
+}
+
+function updatePriceDisplay() {
+  if (!currentExcursion) return;
+  document.getElementById('price-per').textContent   = currentExcursion.price + '€';
+  document.getElementById('price-pax').textContent   = paxCount + ' adulte' + (paxCount > 1 ? 's' : '');
+  document.getElementById('price-total').textContent = (currentExcursion.price * paxCount) + '€';
+}
+
+async function submitReservation() {
+  const name  = document.getElementById('f-name').value.trim();
+  const email = document.getElementById('f-email').value.trim();
+  const date  = document.getElementById('f-date').value;
+  const errEl = document.getElementById('resa-error');
+  if (!name || !email || !date) {
+    errEl.textContent = '⚠ Merci de remplir : Nom, Email et Date.';
+    errEl.classList.remove('hidden'); return;
+  }
+  if (!email.includes('@')) {
+    errEl.textContent = '⚠ Email invalide.';
+    errEl.classList.remove('hidden'); return;
+  }
+
+  const btn = document.querySelector('#screen-reservation button[onclick="submitReservation()"]');
+  if (btn) { btn.disabled = true; btn.textContent = 'Envoi en cours…'; }
+
+  const booking = {
+    excursionId: currentExcursion.id, excursionName: currentExcursion.name,
+    excursionImg: currentExcursion.img, location: currentExcursion.location,
+    name, email,
+    phone:   document.getElementById('f-phone').value.trim(),
+    message: document.getElementById('f-message').value.trim(),
+    date, pax: paxCount, pricePerPax: currentExcursion.price,
+    total: currentExcursion.price * paxCount
+  };
+
+  const ok = await dbSaveBooking(booking);
+  if (!ok && btn) { btn.disabled = false; btn.innerHTML = '<span>Envoyer la demande</span><span class="material-symbols-outlined text-[20px]">send</span>'; errEl.textContent = '⚠ Erreur lors de l\'envoi. Réessayez.'; errEl.classList.remove('hidden'); return; }
+
+  const d = new Date(date + 'T00:00:00');
+  document.getElementById('confirm-title').textContent = currentExcursion.name;
+  document.getElementById('confirm-img').style.backgroundImage = `url('${currentExcursion.img}')`;
+  document.getElementById('confirm-date').textContent = d.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});
+  document.getElementById('confirm-pax').textContent  = paxCount + ' adulte' + (paxCount > 1 ? 's' : '');
+  document.getElementById('confirm-total').textContent = (currentExcursion.price * paxCount) + '€';
+
+  navHistory = [];
+  goTo('screen-confirmation');
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// MES BILLETS
+// ═══════════════════════════════════════════════════════════════════
+async function refreshMyBookings() {
+  const list  = document.getElementById('mybookings-list');
+  const empty = document.getElementById('mybookings-empty');
+  list.innerHTML = `<div class="text-center py-10 text-gray-400"><span class="material-symbols-outlined text-3xl animate-spin">refresh</span></div>`;
+
+  const bookings = await dbGetBookings();
+  // Filtrer seulement les réservations du session courante (via localStorage comme référence client)
+  const myIds = JSON.parse(localStorage.getItem('gwada_my_ids') || '[]');
+  const mine  = supabaseReady
+    ? bookings.filter(b => myIds.includes(String(b.id)))
+    : bookings;
+
+  if (!mine.length) {
+    list.innerHTML = '';
+    empty.classList.remove('hidden'); empty.classList.add('flex'); return;
+  }
+  empty.classList.add('hidden'); empty.classList.remove('flex');
+  list.innerHTML = mine.map(b => `
+    <div class="bg-white rounded-xl overflow-hidden shadow-card border border-gray-50 fade-up">
+      <div class="h-28 w-full bg-cover bg-center relative" style="background-image:url('${b.excursionImg}')">
+        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+        <div class="absolute bottom-3 left-3">
+          <p class="text-white font-bold">${b.excursionName}</p>
+          <p class="text-white/70 text-xs">${b.location}</p>
+        </div>
+        <span class="absolute top-3 right-3 text-xs font-bold px-2.5 py-1 rounded-full ${statusClass(b.status)}">${statusLabel(b.status)}</span>
+      </div>
+      <div class="p-4 grid grid-cols-2 gap-y-2 text-sm">
+        <div><p class="text-xs text-gray-400 font-semibold uppercase">Date</p><p class="font-bold text-text-main">${fmtDate(b.date)}</p></div>
+        <div><p class="text-xs text-gray-400 font-semibold uppercase">Passagers</p><p class="font-bold text-text-main">${b.pax} adulte${b.pax > 1 ? 's' : ''}</p></div>
+        <div><p class="text-xs text-gray-400 font-semibold uppercase">Total</p><p class="font-bold text-primary-dark">${b.total}€</p></div>
+        <div><p class="text-xs text-gray-400 font-semibold uppercase">Réservé par</p><p class="font-bold text-text-main truncate">${b.name}</p></div>
+      </div>
+    </div>`).join('');
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// ADMIN
+// ═══════════════════════════════════════════════════════════════════
+async function refreshAdmin() {
+  const bookings = await dbGetBookings();
+  const pending  = bookings.filter(b => b.status === 'pending').length;
+  const approved = bookings.filter(b => b.status === 'approved').length;
+  document.getElementById('stat-pending').textContent  = pending;
+  document.getElementById('stat-approved').textContent = approved;
+  document.getElementById('stat-total').textContent    = bookings.length;
+  const badge = document.getElementById('admin-pending-badge');
+  badge.textContent   = pending > 0 ? pending : '';
+  badge.style.display = pending > 0 ? 'flex' : 'none';
+  const now = new Date();
+  document.getElementById('admin-date').textContent = now.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});
+  renderAdminList(bookings);
+}
+
+function setAdminFilter(f, btn) {
+  currentAdminFilter = f;
+  document.querySelectorAll('.admin-filter').forEach(b => {
+    b.classList.remove('bg-text-main','text-white');
+    b.classList.add('bg-white','text-text-main','border','border-gray-200');
+  });
+  btn.classList.add('bg-text-main','text-white');
+  btn.classList.remove('bg-white','text-text-main','border','border-gray-200');
+  refreshAdmin();
+}
+
+function renderAdminList(bookings) {
+  let list = bookings;
+  if (currentAdminFilter !== 'all') list = list.filter(b => b.status === currentAdminFilter);
+  const el    = document.getElementById('admin-list');
+  const empty = document.getElementById('admin-empty');
+  if (!list.length) {
+    el.innerHTML = '';
+    empty.classList.remove('hidden'); empty.classList.add('flex'); return;
+  }
+  empty.classList.add('hidden'); empty.classList.remove('flex');
+  el.innerHTML = list.map(b => `
+    <div class="bg-white rounded-xl p-4 shadow-card hover:shadow-soft transition-shadow fade-up">
+      <div class="flex justify-between items-start mb-3">
+        <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-bold uppercase tracking-wide ${statusClass(b.status)}">${statusLabel(b.status)}</span>
+        <span class="text-xs text-text-secondary font-medium bg-gray-50 px-2 py-1 rounded">${timeAgo(b.createdAt)}</span>
+      </div>
+      <div class="flex gap-4">
+        <div class="w-16 h-16 rounded-lg flex-shrink-0 bg-cover bg-center bg-gray-100" style="background-image:url('${b.excursionImg}')"></div>
+        <div class="flex-1 min-w-0">
+          <h4 class="text-base font-extrabold text-text-main truncate leading-tight mb-1">${b.excursionName}</h4>
+          <div class="flex items-center gap-1 text-text-secondary text-sm mb-0.5">
+            <span class="material-symbols-outlined text-[16px] text-primary-dark">calendar_today</span>${fmtDate(b.date)}
+          </div>
+          <div class="flex items-center gap-1 text-text-secondary text-sm">
+            <span class="material-symbols-outlined text-[16px] text-primary-dark">person</span>
+            <span class="truncate">${b.name} • ${b.pax} pers. • ${b.total}€</span>
+          </div>
+        </div>
+      </div>
+      ${b.status === 'pending' ? `
+      <div class="mt-4 pt-3 border-t border-gray-100 flex gap-3">
+        <button onclick="updateBooking('${b.id}','refused')"  class="flex-1 h-11 bg-white border border-gray-200 rounded-lg text-text-main text-sm font-bold shadow-sm hover:bg-gray-50 transition-colors">REFUSER</button>
+        <button onclick="updateBooking('${b.id}','approved')" class="flex-[2] h-11 bg-primary text-text-main rounded-lg text-sm font-bold active:scale-[0.98] transition-all flex items-center justify-center gap-2">
+          <span class="material-symbols-outlined text-[20px]">check</span>APPROUVER
+        </button>
+      </div>` : ''}
+    </div>`).join('');
+}
+
+async function updateBooking(id, status) {
+  await dbUpdateStatus(id, status);
+  refreshAdmin();
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// QR CODE
+// ═══════════════════════════════════════════════════════════════════
+function openQR() {
+  const url = window.location.href.split('?')[0].split('#')[0];
+  document.getElementById('qr-url').textContent = url;
+  QRCode.toCanvas(document.getElementById('qr-canvas'), url, {
+    width: 220, margin: 2,
+    color: { dark: '#0d1c1b', light: '#ffffff' }
+  });
+  const modal = document.getElementById('qr-modal');
+  modal.classList.remove('hidden');
+  modal.classList.add('flex');
+}
+
+function closeQR() {
+  const modal = document.getElementById('qr-modal');
+  modal.classList.add('hidden');
+  modal.classList.remove('flex');
+}
+
+function downloadQR() {
+  const canvas = document.getElementById('qr-canvas');
+  const a = document.createElement('a');
+  a.download = 'gwadatrip-qrcode.png';
+  a.href = canvas.toDataURL('image/png');
+  a.click();
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// PWA — Service Worker + Install banner
+// ═══════════════════════════════════════════════════════════════════
+let deferredPrompt = null;
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js')
+      .then(reg => console.log('SW registered:', reg.scope))
+      .catch(err => console.log('SW error:', err));
+  });
+}
+
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredPrompt = e;
+  const banner = document.getElementById('pwa-banner');
+  banner.classList.remove('hidden');
+  banner.classList.add('flex');
+});
+
+document.getElementById('pwa-install-btn').addEventListener('click', async () => {
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  const {outcome} = await deferredPrompt.userChoice;
+  deferredPrompt = null;
+  document.getElementById('pwa-banner').classList.add('hidden');
+});
+
+window.addEventListener('appinstalled', () => {
+  document.getElementById('pwa-banner').classList.add('hidden');
+});
+
+// ═══════════════════════════════════════════════════════════════════
+// UTILITAIRES
+// ═══════════════════════════════════════════════════════════════════
+function statusClass(s) {
+  if (s === 'pending')  return 'badge-pending';
+  if (s === 'approved') return 'badge-approved';
+  return 'badge-refused';
+}
+function statusLabel(s) {
+  if (s === 'pending')  return 'En attente';
+  if (s === 'approved') return 'Confirmé';
+  return 'Refusé';
+}
+function fmtDate(iso) {
+  if (!iso) return '–';
+  const d = new Date(iso + (iso.includes('T') ? '' : 'T00:00:00'));
+  return d.toLocaleDateString('fr-FR', {day:'numeric', month:'short', year:'numeric'});
+}
+function timeAgo(iso) {
+  const diff = Date.now() - new Date(iso).getTime();
+  const m = Math.floor(diff/60000);
+  if (m < 2)  return "À l'instant";
+  if (m < 60) return `Il y a ${m} min`;
+  const h = Math.floor(m/60);
+  if (h < 24) return `Il y a ${h}h`;
+  return `Il y a ${Math.floor(h/24)}j`;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════════════
+renderExcursions(EXCURSIONS);
+
+// Données de démo en localStorage si aucune réservation
+if (!supabaseReady && getBookings().length === 0) {
+  saveBookings([
+    { id:10001, excursionId:1, excursionName:"Journée Découverte des Saintes", excursionImg:EXCURSIONS[0].img, location:EXCURSIONS[0].location, name:"Julien Dupont",  email:"julien@example.com", phone:"0690123456", message:"", date:"2026-04-12", pax:4, pricePerPax:75, total:300, status:"pending",  createdAt: new Date(Date.now()-10*60000).toISOString() },
+    { id:10002, excursionId:3, excursionName:"Kayak Mangrove",                  excursionImg:EXCURSIONS[2].img, location:EXCURSIONS[2].location, name:"Marie Curie",    email:"marie@example.com",  phone:"0690654321", message:"", date:"2026-04-14", pax:2, pricePerPax:45, total:90,  status:"pending",  createdAt: new Date(Date.now()-2*3600000).toISOString() },
+    { id:10003, excursionId:4, excursionName:"Coucher de Soleil en Voilier",    excursionImg:EXCURSIONS[3].img, location:EXCURSIONS[3].location, name:"Pierre Richard", email:"pierre@example.com", phone:"",           message:"Table romantique svp", date:"2026-04-15", pax:2, pricePerPax:65, total:130, status:"approved", createdAt: new Date(Date.now()-24*3600000).toISOString() }
+  ]);
+}
+</script>
+</body>
+</html>
