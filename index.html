@@ -57,6 +57,11 @@
   .badge-pending  { background:#ff7f5020; color:#ff7f50; }
   .badge-approved { background:#0df2df20; color:#0abfb0; }
   .badge-refused  { background:#ef444420; color:#ef4444; }
+  /* Filtres catégorie — style garanti sans dépendance Tailwind JIT */
+  .filter-btn { transition: all 0.2s; }
+  .filter-btn.filter-active { background: #0d1c1b !important; color: #ffffff !important; border-color: transparent !important; }
+  /* Admin filtres */
+  .admin-filter.filter-active { background: #0d1c1b !important; color: #ffffff !important; }
 </style>
 </head>
 <body class="bg-background-light font-display antialiased">
@@ -75,10 +80,13 @@
     <button onclick="openQR()" class="p-2 rounded-full hover:bg-primary/10 transition-colors" title="QR Code">
         <span class="material-symbols-outlined text-text-main">qr_code_2</span>
       </button>
-      <button onclick="goTo('screen-admin')" class="relative p-2 rounded-full hover:bg-primary/10 transition-colors group" title="Admin">
-      <span class="absolute top-2 right-2 h-2 w-2 rounded-full bg-accent animate-pulse"></span>
-      <span class="material-symbols-outlined text-text-main">admin_panel_settings</span>
-    </button>
+      <button onclick="goTo('screen-notifications')" class="relative p-2 rounded-full hover:bg-primary/10 transition-colors" title="Notifications">
+        <span class="absolute top-2 right-2 h-2 w-2 rounded-full bg-accent animate-pulse"></span>
+        <span class="material-symbols-outlined text-text-main">notifications</span>
+      </button>
+      <button onclick="goTo('screen-admin')" class="relative p-2 rounded-full hover:bg-primary/10 transition-colors" title="Admin">
+        <span class="material-symbols-outlined text-text-main">admin_panel_settings</span>
+      </button>
   </header>
 
   <!-- Main -->
@@ -144,7 +152,7 @@
         <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">home</span>
         <span class="text-[10px] font-bold">Accueil</span>
       </a>
-      <a class="flex flex-col items-center gap-1 text-gray-400 hover:text-text-main">
+      <a onclick="focusSearch()" class="flex flex-col items-center gap-1 text-gray-400 hover:text-text-main cursor-pointer">
         <span class="material-symbols-outlined">search</span>
         <span class="text-[10px] font-medium">Recherche</span>
       </a>
@@ -152,7 +160,7 @@
         <span class="material-symbols-outlined">confirmation_number</span>
         <span class="text-[10px] font-medium">Billets</span>
       </a>
-      <a class="flex flex-col items-center gap-1 text-gray-400 hover:text-text-main">
+      <a onclick="goTo('screen-profile')" class="flex flex-col items-center gap-1 text-gray-400 hover:text-text-main cursor-pointer">
         <span class="material-symbols-outlined">account_circle</span>
         <span class="text-[10px] font-medium">Profil</span>
       </a>
@@ -598,7 +606,6 @@
 
 <!-- Supabase + QR Code -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
 
 <!-- Modal QR Code -->
 <div id="qr-modal" class="fixed inset-0 z-[200] hidden items-center justify-center bg-black/60 backdrop-blur-sm px-6">
@@ -815,6 +822,7 @@ function goTo(screenId) {
   window.scrollTo(0,0);
   if (screenId === 'screen-admin')      refreshAdmin();
   if (screenId === 'screen-mybookings') refreshMyBookings();
+  if (screenId === 'screen-profile')    refreshProfileStats();
 }
 
 function goBack() {
@@ -877,11 +885,11 @@ function renderExcursions(list) {
 function setFilter(cat, btn) {
   currentFilter = cat;
   document.querySelectorAll('.filter-btn').forEach(b => {
-    b.classList.remove('bg-text-main','text-white');
-    b.classList.add('bg-white','text-text-main','border','border-gray-100');
+    b.classList.remove('filter-active');
+    b.style.background = '';
+    b.style.color = '';
   });
-  btn.classList.add('bg-text-main','text-white');
-  btn.classList.remove('bg-white','text-text-main','border','border-gray-100');
+  btn.classList.add('filter-active');
   filterExcursions();
 }
 
@@ -1072,12 +1080,8 @@ async function refreshAdmin() {
 
 function setAdminFilter(f, btn) {
   currentAdminFilter = f;
-  document.querySelectorAll('.admin-filter').forEach(b => {
-    b.classList.remove('bg-text-main','text-white');
-    b.classList.add('bg-white','text-text-main','border','border-gray-200');
-  });
-  btn.classList.add('bg-text-main','text-white');
-  btn.classList.remove('bg-white','text-text-main','border','border-gray-200');
+  document.querySelectorAll('.admin-filter').forEach(b => b.classList.remove('filter-active'));
+  btn.classList.add('filter-active');
   refreshAdmin();
 }
 
@@ -1131,10 +1135,20 @@ async function updateBooking(id, status) {
 function openQR() {
   const url = window.location.href.split('?')[0].split('#')[0];
   document.getElementById('qr-url').textContent = url;
-  QRCode.toCanvas(document.getElementById('qr-canvas'), url, {
-    width: 220, margin: 2,
-    color: { dark: '#0d1c1b', light: '#ffffff' }
-  });
+  // Génération QR via API goqr.me (image PNG, pas de lib JS nécessaire)
+  const encoded = encodeURIComponent(url);
+  const img = document.createElement('img');
+  img.src = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encoded}&bgcolor=ffffff&color=0d1c1b&margin=10`;
+  img.width = 220; img.height = 220;
+  img.className = 'rounded-xl';
+  img.alt = 'QR Code GwadaTrip';
+  // Remplacer le canvas par une image
+  const container = document.getElementById('qr-canvas').parentNode;
+  const oldCanvas = document.getElementById('qr-canvas');
+  // Stocker l'URL pour le téléchargement
+  img.id = 'qr-canvas';
+  img.dataset.url = img.src;
+  oldCanvas.replaceWith(img);
   const modal = document.getElementById('qr-modal');
   modal.classList.remove('hidden');
   modal.classList.add('flex');
@@ -1147,10 +1161,11 @@ function closeQR() {
 }
 
 function downloadQR() {
-  const canvas = document.getElementById('qr-canvas');
+  const img = document.getElementById('qr-canvas');
   const a = document.createElement('a');
   a.download = 'gwadatrip-qrcode.png';
-  a.href = canvas.toDataURL('image/png');
+  a.href = img.src;
+  a.target = '_blank';
   a.click();
 }
 
@@ -1220,6 +1235,22 @@ function timeAgo(iso) {
 // ═══════════════════════════════════════════════════════════════════
 renderExcursions(EXCURSIONS);
 
+// ─── focusSearch : scroll + focus sur la barre de recherche ──────────────
+function focusSearch() {
+  const input = document.getElementById('search-input');
+  input.scrollIntoView({behavior:'smooth', block:'center'});
+  setTimeout(() => input.focus(), 350);
+}
+
+// ─── Mise à jour stats profil ─────────────────────────────────────────────
+function refreshProfileStats() {
+  const bookings = getBookings();
+  const el1 = document.getElementById('profile-stat-reservations');
+  const el2 = document.getElementById('profile-stat-favs');
+  if (el1) el1.textContent = bookings.length;
+  if (el2) el2.textContent = favs.length;
+}
+
 // Données de démo en localStorage si aucune réservation
 if (!supabaseReady && getBookings().length === 0) {
   saveBookings([
@@ -1229,5 +1260,125 @@ if (!supabaseReady && getBookings().length === 0) {
   ]);
 }
 </script>
+
+<!-- ═══════════════════════════════════════════════════════
+     ÉCRAN — NOTIFICATIONS
+═══════════════════════════════════════════════════════ -->
+<div id="screen-notifications" class="screen max-w-md mx-auto bg-background-light shadow-xl relative">
+  <header class="sticky top-0 z-50 bg-background-light/95 backdrop-blur-sm px-4 pt-5 pb-3 border-b border-gray-100">
+    <div class="flex items-center gap-3">
+      <button onclick="goBack()" class="flex items-center justify-center w-10 h-10 rounded-full bg-white shadow-sm">
+        <span class="material-symbols-outlined">arrow_back</span>
+      </button>
+      <h1 class="text-xl font-bold text-text-main">Notifications</h1>
+    </div>
+  </header>
+  <main class="px-4 py-4 flex flex-col gap-3">
+    <div class="bg-white rounded-xl p-4 shadow-card border-l-4 border-primary flex gap-3 items-start fade-up">
+      <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+        <span class="material-symbols-outlined text-primary-dark text-xl">check_circle</span>
+      </div>
+      <div class="flex-1">
+        <p class="font-bold text-text-main text-sm">Réservation confirmée</p>
+        <p class="text-xs text-gray-500 mt-0.5">Votre excursion "Coucher de Soleil en Voilier" a été approuvée.</p>
+        <p class="text-xs text-primary-dark font-medium mt-1.5">Il y a 2h</p>
+      </div>
+    </div>
+    <div class="bg-white rounded-xl p-4 shadow-card border-l-4 border-accent flex gap-3 items-start fade-up anim-delay-1">
+      <div class="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+        <span class="material-symbols-outlined text-accent text-xl">schedule</span>
+      </div>
+      <div class="flex-1">
+        <p class="font-bold text-text-main text-sm">Rappel excursion</p>
+        <p class="text-xs text-gray-500 mt-0.5">Votre excursion "Les Saintes" est demain à 09h00. Départ de Trois-Rivières.</p>
+        <p class="text-xs text-accent font-medium mt-1.5">Hier</p>
+      </div>
+    </div>
+    <div class="bg-white rounded-xl p-4 shadow-card border-l-4 border-gray-200 flex gap-3 items-start fade-up anim-delay-2">
+      <div class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+        <span class="material-symbols-outlined text-gray-400 text-xl">local_offer</span>
+      </div>
+      <div class="flex-1">
+        <p class="font-bold text-text-main text-sm">Offre spéciale</p>
+        <p class="text-xs text-gray-500 mt-0.5">-15% sur la randonnée Soufrière ce week-end. Profitez-en !</p>
+        <p class="text-xs text-gray-400 font-medium mt-1.5">Il y a 3j</p>
+      </div>
+    </div>
+    <div class="text-center py-8 text-gray-300 fade-up anim-delay-3">
+      <span class="material-symbols-outlined text-4xl">notifications_none</span>
+      <p class="text-sm mt-2">Vous êtes à jour !</p>
+    </div>
+  </main>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     ÉCRAN — PROFIL
+═══════════════════════════════════════════════════════ -->
+<div id="screen-profile" class="screen max-w-md mx-auto bg-background-light shadow-xl relative">
+  <header class="sticky top-0 z-50 bg-background-light/95 backdrop-blur-sm px-4 pt-5 pb-3 border-b border-gray-100">
+    <div class="flex items-center justify-between">
+      <button onclick="goBack()" class="flex items-center justify-center w-10 h-10 rounded-full bg-white shadow-sm">
+        <span class="material-symbols-outlined">arrow_back</span>
+      </button>
+      <h1 class="text-xl font-bold text-text-main">Mon Profil</h1>
+      <button class="flex items-center justify-center w-10 h-10 rounded-full bg-white shadow-sm">
+        <span class="material-symbols-outlined text-primary-dark">edit</span>
+      </button>
+    </div>
+  </header>
+  <main class="px-4 py-6 flex flex-col gap-5">
+    <!-- Avatar -->
+    <div class="flex flex-col items-center gap-3 fade-up">
+      <div class="w-24 h-24 rounded-full bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center shadow-lg shadow-primary/30">
+        <span class="material-symbols-outlined text-white text-5xl">person</span>
+      </div>
+      <div class="text-center">
+        <h2 class="text-xl font-extrabold text-text-main">Votre Nom</h2>
+        <p class="text-sm text-gray-500">votre@email.com</p>
+      </div>
+    </div>
+    <!-- Stats -->
+    <div class="grid grid-cols-3 gap-3 fade-up anim-delay-1">
+      <div class="bg-white rounded-xl p-3 text-center shadow-card">
+        <p id="profile-stat-reservations" class="text-2xl font-extrabold text-primary-dark">0</p>
+        <p class="text-xs text-gray-500 mt-1">Réservations</p>
+      </div>
+      <div class="bg-white rounded-xl p-3 text-center shadow-card">
+        <p id="profile-stat-favs" class="text-2xl font-extrabold text-accent">0</p>
+        <p class="text-xs text-gray-500 mt-1">Favoris</p>
+      </div>
+      <div class="bg-white rounded-xl p-3 text-center shadow-card">
+        <p class="text-2xl font-extrabold text-text-main">6</p>
+        <p class="text-xs text-gray-500 mt-1">Excursions</p>
+      </div>
+    </div>
+    <!-- Menu -->
+    <div class="bg-white rounded-xl shadow-card overflow-hidden fade-up anim-delay-2">
+      <button onclick="goTo('screen-mybookings')" class="w-full flex items-center gap-3 px-4 py-3.5 hover:bg-gray-50 transition-colors border-b border-gray-50">
+        <span class="material-symbols-outlined text-primary-dark">confirmation_number</span>
+        <span class="flex-1 text-left font-medium text-text-main text-sm">Mes réservations</span>
+        <span class="material-symbols-outlined text-gray-300 text-sm">chevron_right</span>
+      </button>
+      <button class="w-full flex items-center gap-3 px-4 py-3.5 hover:bg-gray-50 transition-colors border-b border-gray-50">
+        <span class="material-symbols-outlined text-accent">favorite</span>
+        <span class="flex-1 text-left font-medium text-text-main text-sm">Mes favoris</span>
+        <span class="material-symbols-outlined text-gray-300 text-sm">chevron_right</span>
+      </button>
+      <button onclick="goTo('screen-notifications')" class="w-full flex items-center gap-3 px-4 py-3.5 hover:bg-gray-50 transition-colors border-b border-gray-50">
+        <span class="material-symbols-outlined text-gray-500">notifications</span>
+        <span class="flex-1 text-left font-medium text-text-main text-sm">Notifications</span>
+        <span class="material-symbols-outlined text-gray-300 text-sm">chevron_right</span>
+      </button>
+      <button class="w-full flex items-center gap-3 px-4 py-3.5 hover:bg-gray-50 transition-colors">
+        <span class="material-symbols-outlined text-gray-500">help_outline</span>
+        <span class="flex-1 text-left font-medium text-text-main text-sm">Aide & Contact</span>
+        <span class="material-symbols-outlined text-gray-300 text-sm">chevron_right</span>
+      </button>
+    </div>
+    <!-- Version -->
+    <p class="text-center text-xs text-gray-300 fade-up anim-delay-3">GwadaTrip v1.0 · Fait avec ❤️ en Guadeloupe</p>
+  </main>
+</div>
+
 </body>
 </html>
